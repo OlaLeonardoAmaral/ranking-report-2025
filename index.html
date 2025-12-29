@@ -74,6 +74,26 @@
                 linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
         }
+
+        /* Modal Animation */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .modal-exit {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .modal-exit-active {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.3s, transform 0.3s;
+        }
     </style>
 </head>
 <body class="bg-grid">
@@ -207,11 +227,31 @@
 
     <!-- SESSÃO DONO DO JOGO -->
     <section class="container mx-auto px-4 py-16 reveal">
-        <div class="flex items-center gap-4 mb-8">
-            <div class="bg-yellow-400 p-2 border-2 border-black">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-black"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        <!-- Ajuste Responsivo: flex-col no mobile, lg:flex-row no desktop. items-start no mobile para alinhar a esquerda. -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-8">
+            <div class="flex items-center gap-4">
+                <div class="bg-yellow-400 p-2 border-2 border-black">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-black"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                </div>
+                <div class="flex flex-col">
+                    <h2 class="text-3xl md:text-4xl text-white">DONO DO JOGO</h2>
+                    <span class="text-sm text-yellow-400 font-mono">Clique no card para ver o ranking</span>
+                </div>
             </div>
-            <h2 class="text-3xl md:text-4xl text-white">DONO DO JOGO</h2>
+
+            <!-- FILTROS RESPONSIVOS -->
+            <!-- Mobile: Coluna única, largura total. Tablet(sm): Linha. Desktop(lg): Largura fixa. -->
+            <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+                <div class="w-full lg:w-64">
+                    <input type="text" id="searchInput" placeholder="BUSCAR JOGO..." class="w-full bg-slate-800 text-white border-4 border-black p-2 font-bold uppercase focus:outline-none focus:border-yellow-400 focus:shadow-[4px_4px_0px_0px_#facc15] transition-all placeholder-gray-500">
+                </div>
+                <div class="w-full lg:w-64">
+                    <select id="playerFilter" class="w-full bg-slate-800 text-white border-4 border-black p-2 font-bold uppercase focus:outline-none focus:border-yellow-400 focus:shadow-[4px_4px_0px_0px_#facc15] transition-all cursor-pointer">
+                        <option value="all">TODOS OS JOGADORES</option>
+                        <!-- Opções geradas via JS -->
+                    </select>
+                </div>
+            </div>
         </div>
 
         <!-- Adicionado 'items-start' para corrigir a altura dos cards adjacentes -->
@@ -249,8 +289,108 @@
         </div>
     </footer>
 
+    <!-- MODAL DO RANKING (Agora em Tema Escuro) -->
+    <div id="rankingModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
+        
+        <!-- Modal Content atualizado para Dark Theme -->
+        <div class="relative bg-slate-900 border-4 border-yellow-400 shadow-[8px_8px_0px_0px_#facc15] w-full max-w-md p-6 transform transition-all" id="modalContent">
+            <button onclick="closeModal()" class="absolute top-4 right-4 bg-red-500 text-white border-2 border-black hover:bg-red-600 p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 18 18"/></svg>
+            </button>
+            
+            <h3 id="modalTitle" class="text-2xl font-black uppercase mb-4 pr-10 border-b-4 border-yellow-400 pb-2 text-yellow-400">Nome do Jogo</h3>
+            
+            <div id="modalList" class="space-y-2 font-mono">
+                <!-- Lista será injetada aqui -->
+            </div>
+            
+            <div class="mt-6 text-center text-xs text-gray-500 uppercase font-bold tracking-widest">
+                Ranking Awards 2025
+            </div>
+        </div>
+    </div>
+
     <!-- SCRIPT LÓGICA -->
     <script>
+        // DADOS DE RANKING DETALHADO
+        const gameRankings = {
+            "Hive pocket": [
+                { name: "Léo", wins: 2 }
+            ],
+            "Trio": [
+                { name: "Nanna", wins: 68 }, { name: "Vera", wins: 50 }, { name: "Léo", wins: 48 },
+                { name: "Brenno", wins: 31 }, { name: "Anderson", wins: 10 }
+            ],
+            "Bloqueio": [
+                { name: "Nanna", wins: 10 }, { name: "Léo", wins: 7 }, { name: "Anderson", wins: 4 },
+                { name: "Brenno", wins: 3 }, { name: "Vera", wins: 1 }
+            ],
+            "Animix": [
+                { name: "Nanna", wins: 7 }, { name: "Brenno", wins: 5 }, { name: "Alice", wins: 3 },
+                { name: "Léo", wins: 2 }
+            ],
+            "Skull": [
+                { name: "Léo", wins: 4 }, { name: "Nanna", wins: 4 }, { name: "Brenno", wins: 4 },
+                { name: "Anderson", wins: 3 }, { name: "Alice", wins: 1 }
+            ],
+            "Eternity (Dragão)": [
+                { name: "Brenno", wins: 1 }
+            ],
+            "Banana": [
+                { name: "Nanna", wins: 5 }, { name: "Vera", wins: 2 }, { name: "Anderson", wins: 1 }
+            ],
+            "Dobro": [
+                { name: "Brenno", wins: 1 }
+            ],
+            "Cabanga": [
+                { name: "Nanna", wins: 14 }, { name: "Léo", wins: 10 }, { name: "Vera", wins: 9 },
+                { name: "Brenno", wins: 8 }, { name: "Anderson", wins: 2 }
+            ],
+            "Ritus": [
+                { name: "Nanna", wins: 3 }, { name: "Brenno", wins: 1 }
+            ],
+            "3 Capítulos": [
+                { name: "Léo", wins: 3 }, { name: "Brenno", wins: 3 }, { name: "Nanna", wins: 2 },
+                { name: "Alice", wins: 1 }
+            ],
+            "Spots": [
+                { name: "Nanna", wins: 3 }, { name: "Brenno", wins: 2 }, { name: "Léo", wins: 1 }
+            ],
+            "Tatsu": [
+                { name: "Brenno", wins: 2 }, { name: "Nanna", wins: 1 }
+            ],
+            "Battle Of Legends": [
+                { name: "Léo", wins: 8 }, { name: "Nanna", wins: 7 }, { name: "Brenno", wins: 6 },
+                { name: "Alice", wins: 2 }
+            ],
+            "Rebel Princess": [
+                { name: "Brenno", wins: 2 }, { name: "Léo", wins: 1 }, { name: "Nanna", wins: 1 }
+            ],
+            "Mascareds": [
+                { name: "Nanna", wins: 1 }
+            ],
+            "Perfil": [
+                { name: "Alice", wins: 6 }, { name: "Nanna", wins: 1 }, { name: "Brenno", wins: 1 },
+                { name: "Gabriel", wins: 1 }
+            ],
+            "UNO Flip": [
+                { name: "Nanna", wins: 16 }, { name: "Léo", wins: 10 }, { name: "Anderson", wins: 7 },
+                { name: "Vera", wins: 6 }, { name: "Brenno", wins: 6 }
+            ],
+            "Aposta": [
+                { name: "Léo", wins: 1 }
+            ],
+            "Flip 7": [
+                { name: "Léo", wins: 6 }, { name: "Nanna", wins: 5 }, { name: "Brenno", wins: 5 },
+                { name: "Vera", wins: 3 }
+            ],
+            "Spicy": [
+                { name: "Brenno", wins: 4 }, { name: "Léo", wins: 2 }, { name: "Vera", wins: 1 }
+            ]
+        };
+
         // DADOS DE JOGOS
         const topGames = [
             { name: "Trio", count: 207 }, { name: "UNO Flip", count: 48 }, { name: "Cabanga", count: 44 },
@@ -258,8 +398,8 @@
             { name: "Animix", count: 17 }, { name: "Skull", count: 16 }, { name: "3 Capítulos", count: 9 },
             { name: "Perfil", count: 9 }, { name: "Banana", count: 8 }, { name: "Spicy", count: 7 },
             { name: "Spots", count: 6 }, { name: "Ritus", count: 4 }, { name: "Rebel Princess", count: 4 },
-            { name: "Tatsu", count: 3 }, { name: "Hive pocket", count: 2 }, { name: "Eternity (Dragão)", count: 5 },
-            { name: "Dobro", count: 6 }, { name: "Mascareds", count: 1 }, { name: "Aposta", count: 1 }
+            { name: "Tatsu", count: 3 }, { name: "Hive pocket", count: 2 }, { name: "Eternity (Dragão)", count: 6 },
+            { name: "Dobro", count: 5 }, { name: "Mascareds", count: 1 }, { name: "Aposta", count: 1 }
         ];
 
         // DADOS DE DONOS DO JOGO
@@ -277,7 +417,7 @@
             { game: "3 Capítulos", owners: [{name: "Léo", count: 3}, {name: "Brenno", count: 3}] },
             { game: "Spots", owners: [{name: "Nanna", count: 3}] },
             { game: "Tatsu", owners: [{name: "Brenno", count: 2}] },
-            // { game: "Battle Of Legends", owners: [{name: "Léo", count: 8}] },
+            { game: "Battle Of Legends", owners: [{name: "Léo", count: 8}] },
             { game: "Rebel Princess", owners: [{name: "Brenno", count: 2}] },
             { game: "Mascareds", owners: [{name: "Nanna", count: 1}] },
             { game: "Perfil", owners: [{name: "Alice", count: 6}] },
@@ -295,12 +435,195 @@
             'Alice': '#e9d5ff', // purple-200
             'Vera': '#bbf7d0',  // green-200
             'teste 1': '#e5e7eb', // gray-200
+            'Gabriel': '#cbd5e1', // slate-300
+            'Anderson': '#a855f7', // purple-500
             'default': '#ffffff'
         };
 
         function getPlayerColor(name) {
             return playerColors[name] || playerColors['default'];
         }
+        
+        // --- LÓGICA DE FILTRO E RENDERIZAÇÃO ---
+        
+        // 1. Popular Select de Jogadores dinamicamente
+        const uniquePlayers = new Set();
+        gameOwners.forEach(g => g.owners.forEach(o => uniquePlayers.add(o.name)));
+        const playerFilterSelect = document.getElementById('playerFilter');
+        
+        Array.from(uniquePlayers).sort().forEach(player => {
+            const option = document.createElement('option');
+            option.value = player;
+            option.innerText = player;
+            playerFilterSelect.appendChild(option);
+        });
+
+        // 2. Função de Renderização com Filtro
+        function renderOwnerCards(filterText = "", filterPlayer = "all") {
+            const ownersContainer = document.getElementById('owners-grid');
+            ownersContainer.innerHTML = '';
+            
+            const filteredGames = gameOwners.filter(item => {
+                // Filtro por Texto (Nome do Jogo)
+                const textMatch = item.game.toLowerCase().includes(filterText.toLowerCase());
+                
+                // Filtro por Jogador (Se o jogador está na lista de donos)
+                const playerMatch = filterPlayer === "all" || item.owners.some(o => o.name === filterPlayer);
+                
+                return textMatch && playerMatch;
+            });
+
+            if (filteredGames.length === 0) {
+                ownersContainer.innerHTML = `
+                    <div class="col-span-full text-center py-8 opacity-50 font-bold border-2 border-dashed border-gray-600">
+                        NENHUM RESULTADO ENCONTRADO
+                    </div>
+                `;
+                return;
+            }
+
+            filteredGames.forEach(item => {
+                const card = document.createElement('div');
+                const isSingle = item.owners.length === 1;
+                
+                let cardBg = '';
+                if (isSingle) {
+                    cardBg = getPlayerColor(item.owners[0].name);
+                } else {
+                    cardBg = '#d4d4d8'; // Cinza concreto
+                }
+                
+                card.className = `border-4 border-black shadow-[4px_4px_0px_0px_#000] hover:translate-y-1 hover:shadow-none transition-all text-black flex flex-col h-fit cursor-pointer relative group animate-fade-in`;
+                card.style.backgroundColor = cardBg;
+                card.onclick = () => openModal(item.game);
+                
+                // Título
+                let contentHtml = `
+                    <div class="p-4 pb-2">
+                        <div class="flex justify-between items-start">
+                            <div class="text-xs uppercase font-bold tracking-widest text-gray-700 mb-1 opacity-70">Jogo</div>
+                            <div class="text-xs opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white px-1">VER RANKING</div>
+                        </div>
+                        <div class="text-lg font-black leading-tight">${item.game}</div>
+                    </div>
+                `;
+
+                // Donos
+                let ownersHtml = '';
+                if (isSingle) {
+                    ownersHtml = `
+                        <div class="p-4 pt-0 mt-auto">
+                            <div class="flex justify-between items-end border-t-2 border-black pt-2">
+                                <span class="font-bold">${item.owners[0].name}</span>
+                                <span class="text-xs font-mono font-bold border border-black px-1 bg-white/50">${item.owners[0].count} wins</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    ownersHtml = '<div class="mt-2 flex-grow flex flex-col justify-end">';
+                    item.owners.forEach(owner => {
+                        const color = getPlayerColor(owner.name);
+                        ownersHtml += `
+                            <div class="flex justify-between items-center p-2 px-4 border-t-2 border-black" style="background-color: ${color}">
+                                <span class="font-bold">${owner.name}</span>
+                                <span class="text-xs font-mono font-bold border border-black px-1 bg-white/50">${owner.count} wins</span>
+                            </div>
+                        `;
+                    });
+                    ownersHtml += '</div>';
+                }
+
+                card.innerHTML = contentHtml + ownersHtml;
+                ownersContainer.appendChild(card);
+            });
+        }
+
+        // 3. Event Listeners para os Filtros
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const playerVal = document.getElementById('playerFilter').value;
+            renderOwnerCards(e.target.value, playerVal);
+        });
+
+        document.getElementById('playerFilter').addEventListener('change', (e) => {
+            const textVal = document.getElementById('searchInput').value;
+            renderOwnerCards(textVal, e.target.value);
+        });
+
+        // 4. Renderização Inicial
+        renderOwnerCards();
+
+        // --- FUNÇÕES DO MODAL ---
+        function openModal(gameName) {
+            const modal = document.getElementById('rankingModal');
+            const title = document.getElementById('modalTitle');
+            const list = document.getElementById('modalList');
+            
+            // Tenta encontrar o nome do jogo correspondente (case insensitive ou exato)
+            // Os dados no objeto 'gameRankings' estão com Maiúsculas (ex: "Bloqueio", "Animix")
+            // A chave vem do card que pode estar igual.
+            
+            // Normalizar a chave para busca
+            let rankingData = gameRankings[gameName];
+
+            // Fallback: Tenta achar ignorando case se não achar direto
+            if (!rankingData) {
+                const key = Object.keys(gameRankings).find(k => k.toLowerCase() === gameName.toLowerCase());
+                if (key) rankingData = gameRankings[key];
+            }
+
+            title.innerText = gameName;
+            list.innerHTML = '';
+
+            if (rankingData && rankingData.length > 0) {
+                rankingData.forEach((player, index) => {
+                    const isWinner = index === 0;
+                    
+                    // Lógica de cores atualizada para Alto Contraste no Dark Mode
+                    const rowClass = isWinner 
+                        ? "bg-yellow-400 text-black border-2 border-black p-2 flex justify-between items-center font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-3" // Vencedor: Fundo amarelo, texto preto
+                        : "border-b border-gray-700 p-2 flex justify-between items-center text-sm text-gray-200"; // Outros: Texto claro, borda escura
+                    
+                    const medal = isWinner ? "👑 " : `${index + 1}. `;
+                    
+                    // Badge também ajustado
+                    const badgeClass = isWinner
+                        ? "bg-black text-white px-2 py-0.5 text-xs font-bold"
+                        : "bg-gray-700 text-white px-2 py-0.5 text-xs rounded-sm";
+
+                    list.innerHTML += `
+                        <div class="${rowClass}">
+                            <span>${medal}${player.name}</span>
+                            <span class="${badgeClass}">${player.wins} wins</span>
+                        </div>
+                    `;
+                });
+            } else {
+                list.innerHTML = '<div class="p-4 text-center text-gray-500">Dados de ranking não disponíveis.</div>';
+            }
+
+            modal.classList.remove('hidden');
+            // Pequena animação
+            const content = document.getElementById('modalContent');
+            content.classList.remove('modal-exit', 'modal-exit-active');
+            content.classList.add('modal-enter');
+            setTimeout(() => {
+                content.classList.add('modal-enter-active');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('rankingModal');
+            const content = document.getElementById('modalContent');
+            
+            content.classList.remove('modal-enter', 'modal-enter-active');
+            content.classList.add('modal-exit');
+            content.classList.add('modal-exit-active');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300); // Tempo da transição
+        }
+
 
         // RENDERIZAR GRÁFICO DE JOGOS (BARRA)
         const ctxGames = document.getElementById('gamesChart').getContext('2d');
@@ -367,13 +690,18 @@
                 cardBg = '#d4d4d8'; // Cinza concreto (zinc-300) em vez de branco
             }
             
-            card.className = `border-4 border-black shadow-[4px_4px_0px_0px_#000] hover:translate-y-1 hover:shadow-none transition-all text-black flex flex-col h-fit`;
+            // Adicionado cursor-pointer e evento onclick
+            card.className = `border-4 border-black shadow-[4px_4px_0px_0px_#000] hover:translate-y-1 hover:shadow-none transition-all text-black flex flex-col h-fit cursor-pointer relative group`;
             card.style.backgroundColor = cardBg;
+            card.onclick = () => openModal(item.game);
             
             // Título do jogo
             let contentHtml = `
                 <div class="p-4 pb-2">
-                    <div class="text-xs uppercase font-bold tracking-widest text-gray-700 mb-1 opacity-70">Jogo</div>
+                    <div class="flex justify-between items-start">
+                        <div class="text-xs uppercase font-bold tracking-widest text-gray-700 mb-1 opacity-70">Jogo</div>
+                        <div class="text-xs opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white px-1">VER RANKING</div>
+                    </div>
                     <div class="text-lg font-black leading-tight">${item.game}</div>
                 </div>
             `;
