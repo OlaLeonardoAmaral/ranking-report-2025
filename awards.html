@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking Awards 2025 - Board Games</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts: Space Mono e Archivo Black para o estilo Brutalista -->
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* Configurações Globais e Variáveis de Cores Brutalistas */
+        :root {
+            --bg-dark: #0f172a; /* Azul muito escuro */
+            --primary-blue: #1d4ed8; /* Azul vibrante */
+            --accent-yellow: #facc15; /* Amarelo ouro */
+            --accent-red: #ef4444; /* Vermelho alerta */
+            --accent-green: #22c55e; /* Verde dinheiro */
+            --border-color: #000000;
+        }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Archivo Black', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* Estilo Brutalista: Borda grossa e Sombra dura */
+        .brutal-box {
+            border: 4px solid var(--border-color);
+            box-shadow: 8px 8px 0px 0px var(--border-color);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .brutal-box:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 12px 12px 0px 0px var(--border-color);
+        }
+
+        /* Cores de fundo específicas para seções */
+        .bg-yellow-brutal { background-color: var(--accent-yellow); color: black; }
+        .bg-blue-brutal { background-color: var(--primary-blue); color: white; }
+        .bg-red-brutal { background-color: var(--accent-red); color: white; }
+        .bg-green-brutal { background-color: var(--accent-green); color: black; }
+        .bg-white-brutal { background-color: #ffffff; color: black; }
+
+        /* Animação de Scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Padrão de fundo (Grid) */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-grid">
+
+    <!-- HERO SECTION -->
+    <header class="min-h-screen flex flex-col justify-center items-center text-center p-6 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-2 bg-yellow-400"></div>
+        
+        <div class="brutal-box bg-blue-brutal p-8 max-w-4xl w-full z-10 mb-8 relative">
+            <div class="absolute -top-6 -left-6 bg-yellow-400 text-black font-bold px-4 py-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rotate-[-5deg]">
+                RETROSPECTIVA
+            </div>
+            <h1 class="text-5xl md:text-7xl mb-4 leading-tight tracking-tighter">
+                RANKING<br>AWARDS<br><span class="text-yellow-400">2025</span>
+            </h1>
+            <p class="text-lg md:text-xl font-bold mt-4 border-t-4 border-black pt-4">
+                O ano em dados, vitórias e caos nos tabuleiros.
+            </p>
+        </div>
+
+        <div class="animate-bounce mt-10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-400"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+        </div>
+    </header>
+
+    <!-- INTRODUÇÃO -->
+    <section class="container mx-auto px-4 py-16 reveal">
+        <div class="brutal-box bg-white-brutal p-6 md:p-10 max-w-3xl mx-auto">
+            <h2 class="text-3xl md:text-4xl mb-6 text-blue-900 border-b-4 border-black pb-2">Start Game</h2>
+            <p class="text-lg md:text-xl leading-relaxed">
+                Bem-vindos ao relatório definitivo de 2025. Analisamos cada partida, cada moeda conquistada e cada derrota amarga. Abaixo, você encontrará quem dominou a mesa, quem faliu e quais jogos definiram nosso ano. Prepare-se, os números não mentem.
+            </p>
+        </div>
+    </section>
+
+    <!-- TOP 3 STATUS (Cards Principais) -->
+    <section class="container mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <!-- Vitórias -->
+            <div class="reveal delay-100">
+                <div class="brutal-box bg-yellow-brutal p-6 h-full flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold">Vitórias</h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center border-b-2 border-black pb-1">
+                            <span class="font-bold text-xl">1. Nanna</span>
+                            <span class="font-bold text-2xl">148</span>
+                        </div>
+                        <div class="text-sm space-y-2">
+                            <div class="flex justify-between"><span>2. Léo</span> <span>105</span></div>
+                            <div class="flex justify-between"><span>3. Brenno</span> <span>85</span></div>
+                            <div class="flex justify-between opacity-75"><span>4. Vera</span> <span>72</span></div>
+                            <div class="flex justify-between opacity-75"><span>5. Anderson</span> <span>27</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Derrotas -->
+            <div class="reveal delay-200">
+                <div class="brutal-box bg-red-brutal p-6 h-full flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold">Derrotas</h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center border-b-2 border-white pb-1">
+                            <span class="font-bold text-xl">1. Léo</span>
+                            <span class="font-bold text-2xl">335</span>
+                        </div>
+                        <div class="text-sm space-y-2">
+                            <div class="flex justify-between"><span>2. Nanna</span> <span>292</span></div>
+                            <div class="flex justify-between"><span>3. Brenno</span> <span>225</span></div>
+                            <div class="flex justify-between opacity-75"><span>4. Vera</span> <span>208</span></div>
+                            <div class="flex justify-between opacity-75"><span>5. Anderson</span> <span>144</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Moedas -->
+            <div class="reveal delay-300">
+                <div class="brutal-box bg-green-brutal p-6 h-full flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold">Faturamento</h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center border-b-2 border-black pb-1">
+                            <span class="font-bold text-xl">1. Nanna</span>
+                            <span class="font-bold text-2xl">3860</span>
+                        </div>
+                        <div class="text-sm space-y-2">
+                            <div class="flex justify-between"><span>2. Vera</span> <span>2890</span></div>
+                            <div class="flex justify-between"><span>3. Brenno</span> <span>2755</span></div>
+                            <div class="flex justify-between opacity-75"><span>4. Léo</span> <span>2485</span></div>
+                            <div class="flex justify-between opacity-75"><span>5. Alice</span> <span>1065</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- GRÁFICOS -->
+    <section class="container mx-auto px-4 py-16 reveal">
+        <h2 class="text-3xl md:text-5xl text-yellow-400 mb-8 text-center text-stroke">ESTATÍSTICAS GERAIS</h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Gráfico Jogos Mais Jogados -->
+            <div class="brutal-box bg-white p-4">
+                <h3 class="text-black text-xl mb-4 border-b-4 border-blue-900 inline-block">Top 10 Jogos Mais Jogados</h3>
+                <div class="relative h-64 md:h-80 w-full">
+                    <canvas id="gamesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico Donos do Jogo (Pizza simples das vitórias gerais) -->
+            <div class="brutal-box bg-white p-4">
+                <h3 class="text-black text-xl mb-4 border-b-4 border-blue-900 inline-block">Share de Vitórias (Geral)</h3>
+                <div class="relative h-64 md:h-80 w-full flex justify-center">
+                    <canvas id="winsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SESSÃO DONO DO JOGO -->
+    <section class="container mx-auto px-4 py-16 reveal">
+        <div class="flex items-center gap-4 mb-8">
+            <div class="bg-yellow-400 p-2 border-2 border-black">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-black"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            </div>
+            <h2 class="text-3xl md:text-4xl text-white">DONO DO JOGO</h2>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="owners-grid">
+            <!-- Cards serão gerados via JS -->
+        </div>
+    </section>
+
+    <!-- TOP JOGOS LISTA COMPLETA -->
+    <section class="container mx-auto px-4 py-12 reveal">
+        <div class="brutal-box bg-blue-brutal p-8">
+            <h2 class="text-2xl mb-6 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
+                Ranking de Popularidade (Jogos)
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-2 text-sm md:text-base font-mono" id="games-list">
+                <!-- Lista gerada via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-yellow-400 text-black border-t-4 border-black mt-16 py-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-6 flex justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            </div>
+            <h3 class="text-2xl font-bold mb-2">OBRIGADO POR JOGAR!</h3>
+            <p class="max-w-md mx-auto mb-8 font-bold">
+                Agradecemos a todos os participantes, os vencedores, os perdedores e aqueles que só vieram pela pizza. Nos vemos no próximo turno.
+            </p>
+            <p class="text-sm border-t-2 border-black pt-4 inline-block px-4">
+                Ranking Awards © 2025
+            </p>
+        </div>
+    </footer>
+
+    <!-- SCRIPT LÓGICA -->
+    <script>
+        // DADOS
+        const topGames = [
+            { name: "Trio", count: 17 }, { name: "Battle Of Legends", count: 16 }, { name: "Cabanga", count: 8 },
+            { name: "UNO Flip", count: 8 }, { name: "Bloqueio", count: 7 }, { name: "Animix", count: 6 },
+            { name: "Spots", count: 4 }, { name: "Flip 7", count: 4 }, { name: "3 Capítulos", count: 3 },
+            { name: "Tatsu", count: 3 }, { name: "Rebel Princess", count: 3 }, { name: "Perfil", count: 3 },
+            { name: "Spicy", count: 3 }, { name: "Skull", count: 2 }, { name: "Ritus", count: 2 }
+        ];
+
+        const gameOwners = [
+            { game: "Hive pocket", owner: "Léo", wins: 2 },
+            { game: "Trio", owner: "Nanna", wins: 68 },
+            { game: "Bloqueio", owner: "Nanna", wins: 10 },
+            { game: "Animix", owner: "Nanna", wins: 7 },
+            { game: "Skull", owner: "Léo", wins: 4 },
+            { game: "Eternity", owner: "Brenno", wins: 1 },
+            { game: "Banana", owner: "Nanna", wins: 5 },
+            { game: "Dobro", owner: "Brenno", wins: 1 },
+            { game: "Cabanga", owner: "Nanna", wins: 14 },
+            { game: "Ritus", owner: "Nanna", wins: 3 },
+            { game: "3 Capítulos", owner: "Léo", wins: 3 },
+            { game: "Spots", owner: "Nanna", wins: 3 },
+            { game: "Tatsu", owner: "Brenno", wins: 2 },
+            { game: "Battle Of Legends", owner: "Léo", wins: 8 },
+            { game: "Rebel Princess", owner: "Brenno", wins: 2 },
+            { game: "Mascareds", owner: "Nanna", wins: 1 },
+            { game: "Perfil", owner: "Alice", wins: 6 },
+            { game: "UNO Flip", owner: "Nanna", wins: 16 },
+            { game: "Flip 7", owner: "Léo", wins: 6 },
+            { game: "Spicy", owner: "Brenno", wins: 4 }
+        ];
+
+        // RENDERIZAR GRÁFICO DE JOGOS (BARRA)
+        const ctxGames = document.getElementById('gamesChart').getContext('2d');
+        new Chart(ctxGames, {
+            type: 'bar',
+            data: {
+                labels: topGames.slice(0, 10).map(g => g.name),
+                datasets: [{
+                    label: 'Partidas',
+                    data: topGames.slice(0, 10).map(g => g.count),
+                    backgroundColor: '#1d4ed8',
+                    borderColor: '#000000',
+                    borderWidth: 2,
+                    barThickness: 20
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#e5e5e5' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // RENDERIZAR GRÁFICO DE VITÓRIAS (PIZZA)
+        const ctxWins = document.getElementById('winsChart').getContext('2d');
+        new Chart(ctxWins, {
+            type: 'doughnut',
+            data: {
+                labels: ['Nanna', 'Léo', 'Brenno', 'Vera', 'Anderson'],
+                datasets: [{
+                    data: [148, 105, 85, 72, 27],
+                    backgroundColor: ['#facc15', '#1d4ed8', '#ef4444', '#22c55e', '#a855f7'],
+                    borderColor: '#000000',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { family: 'Space Mono' } } }
+                }
+            }
+        });
+
+        // POPULAR GRID DE DONOS DO JOGO
+        const ownersContainer = document.getElementById('owners-grid');
+        gameOwners.forEach(item => {
+            const card = document.createElement('div');
+            // Classes dinâmicas baseadas no dono para dar cor variada
+            let accentColor = 'bg-white';
+            if(item.owner === 'Nanna') accentColor = 'bg-yellow-200';
+            if(item.owner === 'Léo') accentColor = 'bg-blue-200';
+            if(item.owner === 'Brenno') accentColor = 'bg-red-200';
+
+            card.className = `border-4 border-black p-4 shadow-[4px_4px_0px_0px_#000] hover:translate-y-1 hover:shadow-none transition-all ${accentColor} text-black`;
+            card.innerHTML = `
+                <div class="text-xs uppercase font-bold tracking-widest text-gray-600 mb-1">Jogo</div>
+                <div class="text-lg font-black leading-tight mb-3">${item.game}</div>
+                <div class="flex justify-between items-end border-t-2 border-black pt-2">
+                    <div class="font-bold">${item.owner}</div>
+                    <div class="text-sm bg-black text-white px-2 py-0.5 rounded-none font-mono">${item.wins} wins</div>
+                </div>
+            `;
+            ownersContainer.appendChild(card);
+        });
+
+        // POPULAR LISTA COMPLETA DE JOGOS
+        const gamesListContainer = document.getElementById('games-list');
+        topGames.forEach((game, index) => {
+            const row = document.createElement('div');
+            row.className = "flex justify-between py-1 border-b border-blue-800 last:border-0 hover:pl-2 transition-all";
+            row.innerHTML = `
+                <span>${index + 1}. ${game.name}</span>
+                <span class="opacity-70">${game.count}</span>
+            `;
+            gamesListContainer.appendChild(row);
+        });
+
+        // ANIMAÇÃO DE SCROLL (INTERSECTION OBSERVER)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
