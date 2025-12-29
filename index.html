@@ -252,11 +252,13 @@
     <script>
         // DADOS
         const topGames = [
-            { name: "Trio", count: 17 }, { name: "Battle Of Legends", count: 16 }, { name: "Cabanga", count: 8 },
-            { name: "UNO Flip", count: 8 }, { name: "Bloqueio", count: 7 }, { name: "Animix", count: 6 },
-            { name: "Spots", count: 4 }, { name: "Flip 7", count: 4 }, { name: "3 Capítulos", count: 3 },
-            { name: "Tatsu", count: 3 }, { name: "Rebel Princess", count: 3 }, { name: "Perfil", count: 3 },
-            { name: "Spicy", count: 3 }, { name: "Skull", count: 2 }, { name: "Ritus", count: 2 }
+            { name: "Trio", count: 207 }, { name: "UNO Flip", count: 48 }, { name: "Cabanga", count: 44 },
+            { name: "Bloqueio", count: 26 }, { name: "Battle Of Legends", count: 23 }, { name: "Flip 7", count: 19 },
+            { name: "Animix", count: 17 }, { name: "Skull", count: 16 }, { name: "3 Capítulos", count: 9 },
+            { name: "Perfil", count: 9 }, { name: "Banana", count: 8 }, { name: "Spicy", count: 7 },
+            { name: "Spots", count: 6 }, { name: "Ritus", count: 4 }, { name: "Rebel Princess", count: 4 },
+            { name: "Tatsu", count: 3 }, { name: "Hive pocket", count: 2 }, { name: "Eternity (Dragão)", count: 1 },
+            { name: "Dobro", count: 1 }, { name: "Mascareds", count: 1 }, { name: "Aposta", count: 1 }
         ];
 
         const gameOwners = [
@@ -278,6 +280,7 @@
             { game: "Mascareds", owner: "Nanna", wins: 1 },
             { game: "Perfil", owner: "Alice", wins: 6 },
             { game: "UNO Flip", owner: "Nanna", wins: 16 },
+            { game: "Aposta", owner: "Léo", wins: 1 },
             { game: "Flip 7", owner: "Léo", wins: 6 },
             { game: "Spicy", owner: "Brenno", wins: 4 }
         ];
@@ -289,7 +292,7 @@
             data: {
                 labels: topGames.slice(0, 10).map(g => g.name),
                 datasets: [{
-                    label: 'Partidas',
+                    label: 'Rodadas',
                     data: topGames.slice(0, 10).map(g => g.count),
                     backgroundColor: '#1d4ed8',
                     borderColor: '#000000',
